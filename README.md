@@ -1,9 +1,9 @@
 # ESP_Hanger
+Arduino sketch for an minimal ESP8266 with a HTU21D sensor.
 
-This shows a fast WiFi connect and send method I found on pokewithastick.net
+This shows a fast WiFi connect and send method as outlined on pokewithastick.net
 
 Wake from deep-sleep, read sensor, UDP post, back to sleep.
-
 Time taken on my router is typicaly 250ms.
 
 The sensor is a HTU21D to measure temperature and humidity. The Heat-index is then calculated from the sampled data.
