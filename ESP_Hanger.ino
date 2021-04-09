@@ -8,7 +8,7 @@ The connect speed will be long for the first time. reboots or power-cycles
 after the first will be LOTS quicker.
 
 The figures you will get are very dependent on the router you are connecting to.
-I typically get < 250ms from millis-startup (pre-start of sketch) to UDP post completed.
+I typically get < 250ms from millis-startup (pre-start of sketch) to UDP-post completed.
 
 To get the really fast connects, your WiFi router must be on a fixed WiFi channel, not AUTO.
 Most routers are AUTO by default.
@@ -33,7 +33,7 @@ The handy thing about broadcast packets is they can be received by any (and mult
 in the local subnet. No specific destination is targeted.
 So it can be picked off the network by a raspberry-pi for long term logging, and displayed on a LCD
 display with a ESP UDP listener (fairly trivial). It is not single-source to single-destination, but
-single-source to any/all-destinations, in the local subnet.
+single-source to any/all-destinations (in the local subnet).
 
 */
 
@@ -50,9 +50,9 @@ single-source to any/all-destinations, in the local subnet.
 
 
 HTU21D	myHTU21D(HTU21D_RES_RH12_TEMP14);		// sensor at max resolution
-WiFiUDP udp;
+WiFiUDP udp;									// UDP instance
 
-float temperature, humidity;
+float temperature, humidity;					// read from the sensor
 
 // i2c pins
 #define SDApin 5	// GPIO5
@@ -63,13 +63,13 @@ float temperature, humidity;
 // it must be left unconnected.
 ADC_MODE(ADC_VCC);			
 
-unsigned long t1, t2, t3;		// for millis() timestamps
-int counter;					// used while connecting
-
 float adcfrigg = 0.9900;		// a calibration factor for the internal ADC
 float battery = 0;
 
-String payload;					// to build the UDP string
+unsigned long t1, t2, t3;		// for millis() timestamps
+int counter;					// used while connecting
+
+String payload;					// where to build the UDP string
 
 IPAddress local;				// copy of local IP address
 IPAddress lb;					// modified to make Local-Broadcast addr
@@ -94,7 +94,7 @@ float Hindex;		// calculated heat-index
 // are connected by the saved credentials and it happens MUCH faster.
 
 void setup(void) {
-	t1 = millis();							// first timestamp
+	t1 = millis();							// first timestamp. Start of user sketch.
 
 	WiFi.config(IPA, GATE, MASK, DNS);		// supply ALL the items so no need of DHCP negotiation time.
 	
@@ -155,7 +155,7 @@ void setup(void) {
 	Serial.println(WiFi.BSSIDstr());
 	Serial.print("AP-WiFi channel: ");
 	Serial.println(WiFi.channel());
-	Serial.print("Gadget IP address: ");
+	Serial.print("This gadget IP address: ");
 	Serial.println(local);
 	Serial.println();
 #endif // 
@@ -168,7 +168,7 @@ void setup(void) {
 //	Serial.println(t3);		// can only see this one by serial port (if required)
 //	delay(2);				// time so serial can send.
 
-
+// and go to sleep
 	system_deep_sleep_instant(180000000);  // 180 sec
 
 }
@@ -269,14 +269,13 @@ void make_payload() {
 
 }
 
-
+// use the current temperature and rel-humidity to calculate the Heat-Index
 void doHeatIndex() {
 	float rsq = humidity * humidity;
 	float tsq = temperature * temperature;
 	float T = temperature;
 	float R = humidity;
 	Hindex = c1 + (c2 * T) + (c3 * R) + (c4 * T * R) + (c5 * tsq) + (c6 * rsq) + (c7 * tsq * R) + (c8 * T * rsq) + (c9 * tsq * rsq);
-
 }
 
 
