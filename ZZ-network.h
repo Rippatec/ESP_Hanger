@@ -1,8 +1,8 @@
 
 
 
-const char* ssid = "Linksys";
-const char* password = "typhoon22";
+const char* ssid = "your-SSID";
+const char* password = "your-password";
 
 // change to suit your local network
 #define IPA  IPAddress(192, 168, 3, 150)		
